@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /x/game.html
+Disallow: /x/profile.html
+Disallow: /x/stats.html
+Disallow: /x/settings.html
+
+Sitemap: https://rafxmat.github.io/x/sitemap.xml

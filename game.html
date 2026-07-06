@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var t=localStorage.getItem('rafx_theme');document.documentElement.dataset.theme=(t==='light')?'light':'dark';})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAF× — Oyna</title>
+<link rel="stylesheet" href="dist/style.min.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#d4f03c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RAF×">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<meta name="robots" content="noindex, nofollow">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FNB9PJZTYT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FNB9PJZTYT');
+</script>
+</head>
+<body>
+
+<div class="math-bg" id="math-bg" aria-hidden="true"></div>
+
+<div class="game-page">
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Header -->
+  <header class="game-header">
+
+    <!-- Sol: Duraklat -->
+    <div class="header-left">
+      <button class="hdr-pause-btn" id="hdr-pause-btn" onclick="openPauseMenu()" title="Oyunu duraklat">
+        <svg width="10" height="12" viewBox="0 0 12 14" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="4" height="14" rx="1"/>
+          <rect x="8" y="0" width="4" height="14" rx="1"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Orta: Süre + Hamle -->
+    <div class="header-center">
+      <div class="stat-group">
+        <div class="stat-item" id="timer-item">
+          <span class="stat-val" id="timer-val">0:00</span>
+          <span class="stat-label">süre</span>
+        </div>
+        <div class="stat-item" id="live-stars-item" style="display:none">
+          <span class="stat-val live-stars-wrap" id="live-stars-val"></span>
+          <span class="stat-label">yıldız</span>
+        </div>
+        <div class="stat-item" id="moves-item">
+          <span class="stat-val" id="moves-val">0</span>
+          <span class="stat-label">hamle</span>
+        </div>
+        <div class="stat-item" id="normal-stars-item" style="display:none">
+          <span class="stat-val live-stars-wrap" id="normal-stars-val"></span>
+          <span class="stat-label">yıldız</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sağ: İpucu + Pes -->
+    <div class="header-right">
+      <button class="hint-btn" id="hint-btn" onclick="useHint()" title="İpucu kullan (her ipucu 1 yıldız kaybettirir)">💡 <span class="hint-count">3</span></button>
+      <button class="pes-btn" id="pes-btn" onclick="onPes()" title="Sayıları otomatik yerleştir">🏳 pes</button>
+    </div>
+
+    <!-- JS referansları için gizli -->
+    <span class="diff-badge" id="diff-badge" style="display:none"></span>
+    <span class="mode-badge" id="mode-badge" style="display:none"></span>
+
+  </header>
+
+  <!-- İlerleme -->
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span class="progress-text"><strong id="correct-num">0</strong> / 12 raf tamamlandı</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Oyun Alanı -->
+  <div id="game-area"></div>
+
+</div>
+
+<!-- Tutorial Overlay -->
+<div id="tut-overlay" class="tut-overlay" onclick="dismissTutorial()">
+  <div class="tut-card">
+    <div class="tut-demo">
+      <div class="tut-demo-chip">3</div>
+      <div class="tut-demo-arrow"></div>
+      <div class="tut-demo-shelf"><span class="tut-demo-target">× 15</span></div>
+    </div>
+    <div class="tut-text">Sayıyı sürükleyip doğru rafa bırak</div>
+    <div class="tut-hint">Ekrana dokun ve başla</div>
+  </div>
+</div>
+
+<!-- Win Screen -->
+<div id="win-screen">
+  <div class="win-card">
+    <div class="win-stars" id="win-stars"></div>
+    <div class="win-meta">
+      <span class="win-meta-val" id="win-time">—</span>
+      <span class="win-meta-sep">·</span>
+      <span class="win-meta-val" id="win-moves">—</span>
+      <span class="win-meta-word">hamle</span>
+      <span class="win-meta-sep">·</span>
+      <span class="win-meta-diff" id="win-diff"></span>
+    </div>
+    <div class="win-actions">
+      <button class="btn btn-primary" onclick="initGame()">Tekrar</button>
+      <div class="win-actions-sub">
+        <button class="btn btn-ghost win-share-btn" id="win-share-btn" onclick="shareResult()">↗ Paylaş</button>
+        <a class="btn btn-ghost" href="index.html">Menü</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Duraklama Menüsü -->
+<div id="pause-menu">
+  <div class="pause-card">
+    <div class="pause-card-title"><svg width="13" height="15" viewBox="0 0 12 14" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;margin-right:6px"><rect x="0" y="0" width="4" height="14" rx="1"/><rect x="8" y="0" width="4" height="14" rx="1"/></svg>Duraklatıldı</div>
+    <div class="pause-card-info" id="pause-card-info"></div>
+    <div class="pause-card-divider"></div>
+    <div class="pause-card-actions">
+      <button class="pause-action resume" onclick="closePauseMenu()">
+        <span class="pause-action-icon">▷</span> Devam Et
+      </button>
+      <button class="pause-action newgame" onclick="pauseMenuNewGame()">
+        <span class="pause-action-icon"><img src="icons/new-game.png" alt="Yeni Oyun" style="width:20px;height:20px;object-fit:contain;display:block;"></span> Yeni Oyun
+      </button>
+      <button class="pause-action settings" onclick="openInGameSettings()">
+        <span class="pause-action-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </span> Ayarlar
+      </button>
+      <a class="pause-action quit" href="index.html">
+        <span class="pause-action-icon">➜]</span> Çık
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Oyun İçi Ayarlar -->
+<div id="ingame-settings" onclick="if(event.target===this)closeInGameSettings()">
+  <div class="igs-card">
+    <div class="igs-header">
+      <div class="igs-title">Ayarlar</div>
+      <button class="igs-close" onclick="closeInGameSettings()">✕</button>
+    </div>
+
+    <div class="igs-rows">
+
+      <div class="igs-row">
+        <div class="igs-row-label">Ses Efektleri</div>
+        <div class="igs-slider-wrap">
+          <input type="range" class="music-slider" id="igs-sfx" min="0" max="100" step="1" oninput="igsOnSfx(this.value)">
+          <span class="music-slider-val" id="igs-sfx-val">80</span>
+        </div>
+      </div>
+
+      <div class="igs-row">
+        <div class="igs-row-label">Arka Plan Müziği</div>
+        <div class="igs-slider-wrap">
+          <input type="range" class="music-slider" id="igs-music" min="0" max="100" step="1" oninput="igsOnMusic(this.value)">
+          <span class="music-slider-val" id="igs-music-val">70</span>
+        </div>
+      </div>
+
+      <div class="igs-row">
+        <div class="igs-row-label">Titreşim</div>
+        <label class="uiv-switch">
+          <input id="igs-haptic" type="checkbox" onchange="setHaptic(this.checked)">
+          <span class="uiv-slider"></span>
+        </label>
+      </div>
+
+      <div class="igs-row">
+        <div class="igs-row-label">Kronometre</div>
+        <label class="uiv-switch">
+          <input id="igs-stopwatch" type="checkbox" onchange="igsToggleStopwatch(this.checked)">
+          <span class="uiv-slider"></span>
+        </label>
+      </div>
+
+      <div class="igs-row">
+        <div class="igs-row-label">Tema</div>
+        <label class="switch">
+          <input id="igs-theme-toggle" type="checkbox" onchange="igsSetTheme(this.checked)">
+          <div class="slider round">
+            <div class="sun-moon">
+              <svg id="moon-dot-1" class="moon-dot" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+              <svg id="moon-dot-2" class="moon-dot" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+              <svg id="moon-dot-3" class="moon-dot" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+              <svg id="light-ray-1" class="light-ray" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+              <svg id="light-ray-2" class="light-ray" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+              <svg id="light-ray-3" class="light-ray" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+              <svg id="cloud-1" class="cloud-dark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+              <svg id="cloud-2" class="cloud-dark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+              <svg id="cloud-3" class="cloud-dark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+              <svg id="cloud-4" class="cloud-light" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+              <svg id="cloud-5" class="cloud-light" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+              <svg id="cloud-6" class="cloud-light" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50"></circle></svg>
+            </div>
+            <div class="stars">
+              <svg id="star-1" class="star" viewBox="0 0 20 20"><path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z"></path></svg>
+              <svg id="star-2" class="star" viewBox="0 0 20 20"><path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z"></path></svg>
+              <svg id="star-3" class="star" viewBox="0 0 20 20"><path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z"></path></svg>
+              <svg id="star-4" class="star" viewBox="0 0 20 20"><path d="M 0 10 C 10 10,10 10 ,0 10 C 10 10 , 10 10 , 10 20 C 10 10 , 10 10 , 20 10 C 10 10 , 10 10 , 10 0 C 10 10,10 10 ,0 10 Z"></path></svg>
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <div class="igs-row igs-row-track">
+        <div class="igs-row-label">Müzik Parçası</div>
+        <div class="settings-pill-switch">
+          <button class="settings-pill-btn" id="igs-pill-track-ambient"  onclick="igsSetTrack('ambient')">Ambient</button>
+          <button class="settings-pill-btn" id="igs-pill-track-lofi"     onclick="igsSetTrack('lofi')">Lo-fi</button>
+          <button class="settings-pill-btn" id="igs-pill-track-arpeji"   onclick="igsSetTrack('arpeji')">Arpeji</button>
+          <button class="settings-pill-btn" id="igs-pill-track-minimal"  onclick="igsSetTrack('minimal')">Minimal</button>
+        </div>
+      </div>
+
+      <div class="igs-row">
+        <div class="igs-row-label">Kontrol</div>
+        <div class="settings-pill-switch">
+          <button class="settings-pill-btn" id="igs-pill-drag" onclick="igsSetControl('drag')">Sürükle</button>
+          <button class="settings-pill-btn" id="igs-pill-click" onclick="igsSetControl('click')">Tıkla</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Pes Onay Dialogu -->
+<div id="pes-confirm" onclick="if(event.target===this)closePesConfirm()">
+  <div class="pes-confirm-card">
+    <div class="pes-confirm-icon">🏳</div>
+    <div class="pes-confirm-title">Pes mi ediyorsun?</div>
+    <div class="pes-confirm-sub">Sayılar otomatik yerleştirilecek, bu işlem geri alınamaz.</div>
+    <div class="pes-confirm-actions">
+      <button class="btn btn-danger" onclick="closePesConfirmAndExecute()">Evet, pes et</button>
+      <button class="btn btn-ghost" onclick="closePesConfirm()">İptal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pes Ekranı -->
+<div id="pes-screen">
+  <div class="pes-card">
+    <div class="pes-card-icon">🏳</div>
+    <div class="pes-card-title">Pes Edildi</div>
+    <div class="pes-card-sub">Doğru çözüm yerleştirildi</div>
+    <div class="pes-stats">
+      <div class="pes-stat">
+        <div class="pes-stat-val" id="pes-correct">0</div>
+        <div class="pes-stat-label">Doğru Raf</div>
+      </div>
+      <div class="pes-stat">
+        <div class="pes-stat-val" id="pes-time">—</div>
+        <div class="pes-stat-label">Süre</div>
+      </div>
+      <div class="pes-stat">
+        <div class="pes-stat-val" id="pes-moves">0</div>
+        <div class="pes-stat-label">Hamle</div>
+      </div>
+    </div>
+    <div class="pes-actions">
+      <button class="btn btn-primary" onclick="initGame()">Tekrar</button>
+      <a class="btn btn-ghost btn-sm" href="index.html">Menü</a>
+    </div>
+    <button class="btn btn-replay" id="replay-btn" onclick="startStepReplay()">▷ Çözümü Adım Adım Gör</button>
+  </div>
+</div>
+
+<!-- Replay şeridi (adım adım animasyon sırasında görünür) -->
+<div id="replay-bar" style="display:none">
+  <span id="replay-status">0 / 0 hamle</span>
+  <button class="replay-skip-btn" onclick="skipReplay()">Atla →</button>
+</div>
+
+<!-- Kronometre Pencere (sürüklenebilir + sol alttan resize) -->
+<div id="stopwatch-widget" class="stopwatch-widget" role="dialog" aria-label="Kronometre">
+  <div class="sw-header">
+    <button class="sw-history-btn" onclick="openSwHistory()" title="Geçmiş süreler">📋 Geçmiş</button>
+    <button class="sw-close" onclick="closeStopwatch()" aria-label="Kapat">✕</button>
+  </div>
+  <div class="sw-display" id="sw-display">00:00.0</div>
+  <div class="sw-controls">
+    <button class="sw-start-btn" id="sw-start-btn" onclick="toggleStopwatch()">▷ Başlat</button>
+    <button class="sw-reset-btn" onclick="resetStopwatch()" aria-label="Sıfırla" title="Sıfırla">↻</button>
+  </div>
+  <div class="sw-resize-handle" aria-hidden="true" title="Boyutlandır"></div>
+</div>
+
+<!-- Kronometre Geçmiş Penceresi -->
+<div id="sw-history-window" class="sw-history-window" role="dialog" aria-label="Süre geçmişi">
+  <div class="sw-hist-header">
+    <span class="sw-hist-title">📋 Geçmiş Süreler</span>
+    <button class="sw-hist-close" onclick="closeSwHistory()" aria-label="Kapat">✕</button>
+  </div>
+  <div class="sw-hist-list" id="sw-hist-list"></div>
+  <div class="sw-hist-footer">
+    <button class="sw-hist-clear" onclick="clearSwHistory()">Tümünü Temizle</button>
+  </div>
+</div>
+
+<!-- Günlük Bulmaca Zaten Oynanmış -->
+<div id="daily-done-screen">
+  <div class="daily-done-card">
+    <div class="daily-done-icon">📅</div>
+    <div class="daily-done-title">Bugün oynadın</div>
+    <div class="daily-done-sub" id="daily-done-sub"></div>
+    <div class="daily-done-stars" id="daily-done-stars"></div>
+    <div class="daily-done-stats" id="daily-done-stats"></div>
+    <div class="daily-done-actions">
+      <button class="btn btn-primary" onclick="startDailyAnyway()">Yine de oyna</button>
+      <a class="btn btn-ghost btn-sm" href="index.html">Menü</a>
+    </div>
+  </div>
+</div>
+
+<!-- Süre Doldu Ekranı -->
+<div id="fail-screen">
+  <div class="fail-card">
+    <div class="fail-icon">⏱</div>
+    <div class="fail-title">Süre Doldu!</div>
+    <div class="fail-sub">Bir dahaki sefere!</div>
+    <div class="fail-stats">
+      <div class="fail-stat">
+        <div class="fail-stat-val" id="fail-correct">0</div>
+        <div class="fail-stat-label">Raf</div>
+      </div>
+      <div class="fail-stat">
+        <div class="fail-stat-val" id="fail-moves">0</div>
+        <div class="fail-stat-label">Hamle</div>
+      </div>
+      <div class="fail-stat">
+        <div class="fail-stat-val" id="fail-diff">—</div>
+        <div class="fail-stat-label">Zorluk</div>
+      </div>
+    </div>
+    <div class="fail-actions">
+      <button class="btn btn-primary" onclick="initGame()">Tekrar</button>
+      <a class="btn btn-ghost btn-sm" href="index.html">Menü</a>
+    </div>
+  </div>
+</div>
+
+<script src="dist/game.bundle.min.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var t=localStorage.getItem('rafx_theme');document.documentElement.dataset.theme=(t==='light')?'light':'dark';})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAF× — Çarpım Bulmacası</title>
+<link rel="stylesheet" href="dist/style.min.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#d4f03c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RAF×">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+
+<!-- SEO -->
+<meta name="description" content="RAF× — Ücretsiz çarpım bulmacası oyunu. Sayıları sürükle, rafları hedef çarpımla eşitle, kazan. Kolay · Orta · Zor, Normal · Süre Sınırı · Sonsuz mod.">
+<meta name="keywords" content="çarpım bulmacası, matematik oyunu, bulmaca oyunu, sayı oyunu, çarpım tablosu, RAF, eğitici oyun, zeka oyunu">
+<meta name="author" content="RAF×">
+<meta name="robots" content="index, follow">
+<meta name="google-site-verification" content="pBnDFkcJVhdK2CviImtxMLCGWLPEghedCFNo5Gbp8ew" />
+<link rel="canonical" href="https://rafxmat.github.io/x/">
+
+<!-- Open Graph -->
+<meta property="og:type"        content="website">
+<meta property="og:site_name"   content="RAF×">
+<meta property="og:locale"      content="tr_TR">
+<meta property="og:title"       content="RAF× — Çarpım Bulmacası">
+<meta property="og:description" content="Sayıları sürükle, rafları hedef çarpımla eşitle, kazan. Üç zorluk ve üç oyun modu seni bekliyor.">
+<meta property="og:url"         content="https://rafxmat.github.io/x/">
+<meta property="og:image"       content="https://rafxmat.github.io/x/icons/og-image.png">
+
+<!-- Twitter Card -->
+<meta name="twitter:card"        content="summary">
+<meta name="twitter:title"       content="RAF× — Çarpım Bulmacası">
+<meta name="twitter:description" content="Ücretsiz çarpım bulmacası — sayıları sürükle, rafları doldur, kazan!">
+<meta name="twitter:image"       content="https://rafxmat.github.io/x/icons/og-image.png">
+
+<!-- JSON-LD: Yapısal veri -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "RAF× — Çarpım Bulmacası",
+  "description": "Sayıları sürükle, rafları hedef çarpımla eşitle ve tüm bulmacayı çöz. Kolay, Orta ve Zor zorluklar; Normal, Süre Sınırı ve Sonsuz oyun modları.",
+  "applicationCategory": "Game",
+  "genre": ["Puzzle", "Educational"],
+  "inLanguage": "tr",
+  "operatingSystem": "Web Browser",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" },
+  "featureList": [
+    "3 zorluk seviyesi: Kolay, Orta, Zor",
+    "3 oyun modu: Normal, Süre Sınırı, Sonsuz",
+    "Günlük bulmaca",
+    "Başarım sistemi",
+    "Çevrimdışı oynanabilir (PWA)"
+  ]
+}
+</script>
+<script src="dist/core.bundle.min.js" defer></script>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FNB9PJZTYT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FNB9PJZTYT');
+</script>
+</head>
+<body>
+
+<div class="landing">
+
+  <!-- ── Navigasyon ── -->
+  <nav class="site-nav">
+
+    <!-- Sol: Profil İkonu -->
+    <a href="profile.html" class="nav-profile-icon-btn" id="nav-profile-icon-btn" title="Profil">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+    </a>
+
+    <!-- Sağ: Brand + Kontroller -->
+    <div class="nav-right">
+      <div class="nav-controls">
+        <a href="settings.html" class="nav-btn nav-btn-icon" title="Ayarlar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </a>
+      </div>
+      <div class="nav-brand">RAF<span class="x">×</span></div>
+    </div>
+
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-logo">RAF<span class="x">×</span></div>
+    <p class="hero-tagline">Sayıları sürükle &nbsp;·&nbsp; Çarpımı eşitle &nbsp;·&nbsp; Kazan</p>
+    <div class="hero-greeting" id="hero-greeting" style="display:none"></div>
+    <div class="hero-badges" id="hero-badges"><!-- JS --></div>
+  </section>
+
+  <!-- ── Oyna: Mod + Zorluk ── -->
+  <section class="play-section">
+
+    <!-- Mod sekmeleri -->
+    <div class="mode-tabs" role="tablist">
+      <button class="mode-tab active" data-mode="normal" onclick="selectMode('normal')" role="tab">
+        Normal
+      </button>
+      <button class="mode-tab" data-mode="timed" onclick="selectMode('timed')" role="tab">
+        ⏱ Süre Sınırı
+      </button>
+      <button class="mode-tab" data-mode="endless" onclick="selectMode('endless')" role="tab">
+        ∞ Sonsuz
+      </button>
+    </div>
+
+    <p class="mode-hint" id="mode-hint">Klasik bulmaca — 12 rafı en hızlı ve az hamlede tamamla.</p>
+
+    <!-- Zorluk kartları -->
+    <div class="diff-cards">
+
+      <a href="game.html?d=easy&m=normal" class="diff-card easy">
+        <div class="diff-card-stripe"></div>
+        <div class="diff-card-body">
+          <div class="diff-card-icon">🌱</div>
+          <div class="diff-card-top">
+            <span class="diff-card-name">Kolay</span>
+            <span class="diff-card-tag">2 – 9</span>
+          </div>
+          <p class="diff-card-desc">İki sayılı raflar, küçük çarpımlar</p>
+          <div class="diff-card-record" id="rec-easy">En iyi kayıt yok</div>
+        </div>
+        <div class="diff-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </a>
+
+      <a href="game.html?d=medium&m=normal" class="diff-card medium">
+        <div class="diff-card-stripe"></div>
+        <div class="diff-card-body">
+          <div class="diff-card-icon">⚡</div>
+          <div class="diff-card-top">
+            <span class="diff-card-name">Orta</span>
+            <span class="diff-card-tag">2 – 12</span>
+          </div>
+          <p class="diff-card-desc">Karışık boyutlu raflar, daha büyük sayılar</p>
+          <div class="diff-card-record" id="rec-medium">En iyi kayıt yok</div>
+        </div>
+        <div class="diff-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </a>
+
+      <a href="game.html?d=hard&m=normal" class="diff-card hard">
+        <div class="diff-card-stripe"></div>
+        <div class="diff-card-body">
+          <div class="diff-card-icon">🔥</div>
+          <div class="diff-card-top">
+            <span class="diff-card-name">Zor</span>
+            <span class="diff-card-tag">2 – 15</span>
+          </div>
+          <p class="diff-card-desc">Üç sayılı raflar, büyük çarpımlar, zorlu kombinasyonlar</p>
+          <div class="diff-card-record" id="rec-hard">En iyi kayıt yok</div>
+        </div>
+        <div class="diff-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ── Macera Modu ── -->
+  <a href="map.html" class="adventure-row" id="adventure-row">
+    <div class="adventure-row-left">
+      <span class="adventure-row-icon">🗺</span>
+      <div class="adventure-row-meta">
+        <span class="adventure-row-label">Macera Modu</span>
+        <span class="adventure-row-sub" id="adventure-sub">100 seviye · keşfetmeye başla</span>
+      </div>
+    </div>
+    <div class="adventure-row-right">
+      <span class="adventure-row-progress" id="adventure-progress"></span>
+      <span class="adventure-row-cta">Oyna →</span>
+    </div>
+  </a>
+
+  <!-- ── Günlük Bulmaca ── -->
+  <div class="daily-row" id="daily-row" onclick="openDailyModal()">
+    <div class="daily-row-left">
+      <span class="daily-row-icon">📅</span>
+      <div class="daily-row-meta">
+        <span class="daily-row-label">Günlük Bulmaca</span>
+        <span class="daily-row-date" id="daily-date"></span>
+      </div>
+    </div>
+    <div class="daily-row-right">
+      <div class="daily-row-dots" id="daily-row-dots"><!-- JS --></div>
+      <span class="daily-row-cta">Oyna →</span>
+    </div>
+  </div>
+
+  <!-- Günlük Bulmaca Modalı -->
+  <div id="daily-modal" onclick="if(event.target===this)closeDailyModal()">
+    <div class="daily-modal-card">
+      <div class="daily-modal-header">
+        <div class="daily-modal-title">📅 Günlük Bulmaca</div>
+        <button class="daily-modal-close" onclick="closeDailyModal()">✕</button>
+      </div>
+      <div class="daily-modal-date" id="daily-modal-date"></div>
+      <div class="daily-modal-diffs" id="daily-modal-diffs"><!-- JS --></div>
+    </div>
+  </div>
+
+  <footer class="landing-footer">
+    RAF× &nbsp;·&nbsp; Çarpım Bulmacası &nbsp;·&nbsp; 2026
+  </footer>
+
+</div><!-- /landing -->
+
+
+<script>
+/* ════ MOD SEÇİMİ ════ */
+let selectedMode = 'normal';
+
+const MODE_HINTS = {
+  normal:  'Klasik bulmaca — 12 rafı en hızlı ve az hamlede tamamla.',
+  timed:   'Geri sayım başlar — süre dolmadan tüm rafları tamamla.',
+  endless: 'Raflar tamamlandıkça yenisi gelir — ne kadar sürer?',
+};
+
+function selectMode(mode) {
+  selectedMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.mode === mode)
+  );
+  const hint = document.getElementById('mode-hint');
+  if (hint) hint.textContent = MODE_HINTS[mode];
+  updateDiffLinks();
+}
+
+function updateDiffLinks() {
+  ['easy', 'medium', 'hard'].forEach(d => {
+    const card = document.querySelector(`.diff-card.${d}`);
+    if (card) card.href = `game.html?d=${d}&m=${selectedMode}`;
+  });
+}
+
+/* ════ GÜNLÜK BULMACA ════ */
+const DAILY_DIFFS = [
+  { key: 'easy',   label: 'Kolay' },
+  { key: 'medium', label: 'Orta'  },
+  { key: 'hard',   label: 'Zor'   },
+];
+
+function buildDailyRow() {
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const dateEl = document.getElementById('daily-date');
+  if (dateEl) dateEl.textContent = dateStr;
+
+  // Üç zorluk için tamamlanma noktaları
+  const dots = document.getElementById('daily-row-dots');
+  if (dots) {
+    dots.innerHTML = DAILY_DIFFS.map(({ key }) => {
+      const result = getDailyResult(key);
+      const played = !!result;
+      const stars  = played ? result.stars : 0;
+      const label = {easy:'Kolay',medium:'Orta',hard:'Zor'}[key];
+      if (played) {
+        return `<span class="daily-dot ${key} played" title="${label}">${'★'.repeat(stars)}<span class="daily-dot-empty">${'★'.repeat(3-stars)}</span></span>`;
+      }
+      return `<span class="daily-dot ${key}" title="${label}">·</span>`;
+    }).join('');
+  }
+}
+
+function openDailyModal() {
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const dateEl = document.getElementById('daily-modal-date');
+  if (dateEl) dateEl.textContent = dateStr;
+
+  const container = document.getElementById('daily-modal-diffs');
+  if (container) {
+    container.innerHTML = DAILY_DIFFS.map(({ key, label }) => {
+      const result = getDailyResult(key);
+      const played = !!result;
+      const stars  = played ? result.stars : 0;
+      return `
+        <a href="game.html?d=${key}&daily=1" class="daily-modal-diff${played ? ' played' : ''}">
+          <div class="daily-modal-diff-left">
+            <span class="daily-modal-diff-name ${key}">${label}</span>
+            ${played ? `<span class="daily-modal-diff-meta">${formatTime(result.time)} · ${result.moves} hamle</span>` : '<span class="daily-modal-diff-meta">Oynanmadı</span>'}
+          </div>
+          <div class="daily-modal-diff-right">
+            <span class="daily-modal-stars">${'★'.repeat(stars)}<span class="daily-modal-stars-empty">${'★'.repeat(3-stars)}</span></span>
+            ${played ? '<span class="daily-modal-check">✓</span>' : '<span class="daily-modal-arrow">→</span>'}
+          </div>
+        </a>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('daily-modal').classList.add('show');
+}
+
+function closeDailyModal() {
+  document.getElementById('daily-modal').classList.remove('show');
+}
+
+/* ════ HERO BADGES ════ */
+
+/* ════ BAŞLAT ════ */
+window.addEventListener('DOMContentLoaded', () => {
+  // Rekorları yükle
+  ['easy', 'medium', 'hard'].forEach(d => {
+    const rec = getRecord(d);
+    const el  = document.getElementById('rec-' + d);
+    if (!el) return;
+    if (rec && rec.bestTime) {
+      el.innerHTML = `<b>${formatTime(rec.bestTime)}</b> &nbsp;·&nbsp; <b>${rec.bestMoves}</b> hamle`;
+      el.classList.add('has-record');
+    }
+  });
+
+  updateDiffLinks();
+  buildDailyRow();
+
+  // Macera modu ilerlemesi
+  (function buildAdventureRow() {
+    if (typeof getCompletedCount !== 'function') return;
+    const done = getCompletedCount();
+    const stars = getTotalStars();
+    const progEl = document.getElementById('adventure-progress');
+    const subEl  = document.getElementById('adventure-sub');
+    if (done > 0) {
+      if (progEl) progEl.innerHTML = `<b>${done}</b>/100 · ⭐ <b>${stars}</b>`;
+      if (subEl)  subEl.textContent = 'Yolculuğuna devam et';
+    } else {
+      if (progEl) progEl.textContent = '';
+    }
+  })();
+
+  (function buildHeroBadges() {
+    const s  = getStats();
+    const el = document.getElementById('hero-badges');
+    if (!el || s.streak < 1) return;
+    el.innerHTML = `<span class="hero-badge">🔥 ${s.streak} günlük seri</span>`;
+  })();
+
+  (function buildHeroGreeting() {
+    if (typeof getProfile !== 'function') return;
+    const p = getProfile();
+    if (!p.name) return;
+    const el = document.getElementById('hero-greeting');
+    if (!el) return;
+    const isImg = typeof isAvatarImage === 'function' && isAvatarImage(p.avatar);
+    const avatarHTML = isImg
+      ? `<img src="${p.avatar}" alt="" class="hero-greeting-avatar-img">`
+      : `<span class="hero-greeting-avatar">${p.avatar}</span>`;
+    el.innerHTML = `${avatarHTML} Merhaba, ${p.name}!`;
+    el.style.display = '';
+  })();
+});
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+</script>
+
+<!-- Başarım Detay Sheet -->
+<div id="ach-sheet-overlay" class="ach-sheet-overlay" onclick="if(event.target===this)closeAchSheet()">
+  <div class="ach-sheet-card">
+    <div class="ach-sheet-handle"></div>
+    <div class="ach-sheet-icon" id="ach-sheet-icon"></div>
+    <div class="ach-sheet-name" id="ach-sheet-name"></div>
+    <div class="ach-sheet-desc" id="ach-sheet-desc"></div>
+    <div class="ach-sheet-status" id="ach-sheet-status"></div>
+  </div>
+</div>
+
+<script>
+function showAchDetail(id) {
+  const a = ACHIEVEMENTS.find(x => x.id === id);
+  if (!a) return;
+  const unlocked = getUnlockedIds().has(id);
+  document.getElementById('ach-sheet-icon').textContent  = a.icon;
+  document.getElementById('ach-sheet-icon').className    = 'ach-sheet-icon' + (unlocked ? '' : ' locked');
+  document.getElementById('ach-sheet-name').textContent  = a.name;
+  document.getElementById('ach-sheet-desc').textContent  = a.desc;
+  document.getElementById('ach-sheet-status').textContent = unlocked ? '✓ Kazanıldı' : 'Henüz kazanılmadı';
+  document.getElementById('ach-sheet-status').className   = 'ach-sheet-status ' + (unlocked ? 'unlocked' : 'locked');
+  document.getElementById('ach-sheet-overlay').classList.add('show');
+}
+function closeAchSheet() {
+  document.getElementById('ach-sheet-overlay').classList.remove('show');
+}
+</script>
+
+</body>
+</html>

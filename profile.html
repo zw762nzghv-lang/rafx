@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<script>(function(){var t=localStorage.getItem('rafx_theme');document.documentElement.dataset.theme=(t==='light')?'light':'dark';})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAF× — Profil</title>
+<link rel="stylesheet" href="dist/style.min.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#d4f03c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RAF×">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<meta name="robots" content="noindex, nofollow">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FNB9PJZTYT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FNB9PJZTYT');
+</script>
+</head>
+<body>
+
+<div class="settings-page">
+
+  <header class="settings-header">
+    <a href="index.html" class="back-link"><span class="back-arrow">←</span> geri</a>
+    <div class="game-logo">RAF<span class="x">×</span></div>
+    <span class="settings-page-title">Profil</span>
+    <div class="header-spacer"></div>
+  </header>
+
+  <div class="profile-body">
+
+    <!-- ── Hero ── -->
+    <section class="prf-card prf-hero">
+      <div class="prf-card-head">
+        <h2 class="prf-card-title">Profil</h2>
+        <button class="prf-edit-trigger" onclick="openProfileEdit()" title="Profili düzenle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+          Düzenle
+        </button>
+      </div>
+      <div class="prf-hero-top">
+        <div class="prf-avatar prf-avatar-display" id="prf-avatar-display">◈</div>
+        <div class="prf-hero-info">
+          <div class="prf-hero-name" id="prf-hero-name">Oyuncu</div>
+          <div class="prf-hero-sub" id="prf-hero-sub">—</div>
+        </div>
+        <div class="prf-hero-streak" id="prf-hero-streak"></div>
+      </div>
+      <div class="prf-stats-grid" id="prf-hero-stats"></div>
+    </section>
+
+    <!-- ── Profil Düzenle Modal ── -->
+    <div id="prf-edit-modal" onclick="if(event.target===this)closeProfileEdit()">
+      <div class="prf-edit-card" role="dialog" aria-labelledby="prf-edit-title-el">
+        <div class="prf-edit-header">
+          <div class="prf-edit-title" id="prf-edit-title-el">Profili Düzenle</div>
+          <button class="prf-edit-close" onclick="closeProfileEdit()" aria-label="Kapat">✕</button>
+        </div>
+
+        <div class="prf-edit-section">
+          <div class="prf-edit-label">İsim</div>
+          <div class="prf-edit-input-wrap">
+            <input type="text" id="prf-edit-name" class="prf-edit-input" maxlength="16" placeholder="Adın" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="prf-edit-hint"><span id="prf-name-counter">0</span> / 16</div>
+        </div>
+
+        <div class="prf-edit-section">
+          <div class="prf-edit-label">Avatar</div>
+          <div class="prf-avatar-upload">
+            <div class="prf-avatar-preview" id="prf-avatar-preview">★</div>
+            <div class="prf-avatar-upload-side">
+              <button type="button" class="prf-upload-btn" onclick="document.getElementById('prf-avatar-file').click()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Resim Seç
+              </button>
+              <button type="button" class="prf-remove-btn" id="prf-remove-btn" onclick="removeProfileAvatar()" style="display:none">
+                Kaldır
+              </button>
+              <div class="prf-upload-hint">JPG, PNG · max 5 MB</div>
+            </div>
+            <input type="file" id="prf-avatar-file" accept="image/*" onchange="onAvatarFileSelected(event)" hidden>
+          </div>
+          <div class="prf-avatar-error" id="prf-avatar-error" style="display:none"></div>
+        </div>
+
+        <div class="prf-edit-actions">
+          <button class="btn btn-ghost" onclick="closeProfileEdit()">İptal</button>
+          <button class="btn btn-primary" onclick="saveProfileEdit()">Kaydet</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Rekorlar ── -->
+    <section class="prf-card">
+      <div class="prf-card-head">
+        <h2 class="prf-card-title">Rekorlar</h2>
+        <a href="stats.html" class="prf-card-link">Detay →</a>
+      </div>
+      <div class="prf-records" id="prf-diff-rows"></div>
+    </section>
+
+    <!-- ── Başarımlar ── -->
+    <section class="prf-card">
+      <div class="prf-card-head">
+        <h2 class="prf-card-title">Başarımlar</h2>
+        <a href="achievements.html" class="prf-card-link">Tümü →</a>
+      </div>
+      <div class="prf-ach">
+        <div class="prf-ach-bar"><div class="prf-ach-fill" id="prf-ach-fill"></div></div>
+        <div class="prf-ach-meta" id="prf-ach-meta">—</div>
+      </div>
+      <div class="prf-ach-chips" id="prf-ach-chips"></div>
+    </section>
+
+  </div>
+</div>
+
+<script src="dist/core.bundle.min.js"></script>
+<script>
+/* ── Yardımcılar ── */
+function formatLongTime(sec) {
+  if (!sec) return '—';
+  if (sec < 60)   return sec + ' sn';
+  if (sec < 3600) return Math.floor(sec / 60) + ' dk';
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  return m === 0 ? h + ' sa' : h + ' sa ' + m + ' dk';
+}
+
+function humanDate(iso) {
+  if (!iso) return '—';
+  const today = new Date().toISOString().slice(0, 10);
+  if (iso === today) return 'Bugün';
+  const yest = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  if (iso === yest) return 'Dün';
+  const d = new Date(iso);
+  return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' });
+}
+
+/* ── Profil hero'yu güncel verilerle yenile ── */
+function applyAvatarTo(el, av) {
+  if (!el) return;
+  if (isAvatarImage(av)) {
+    el.innerHTML = `<img src="${av}" alt="">`;
+    el.classList.add('has-image');
+  } else {
+    el.textContent = av;
+    el.classList.remove('has-image');
+  }
+}
+
+function refreshProfileHero() {
+  const p = getProfile();
+  applyAvatarTo(document.getElementById('prf-avatar-display'), p.avatar);
+  const nmEl = document.getElementById('prf-hero-name');
+  if (nmEl) nmEl.textContent = p.name || 'Oyuncu';
+}
+
+/* ── Modal: aç / kapat ── */
+let _prfSelectedAvatar = '★';
+
+function openProfileEdit() {
+  const p = getProfile();
+  _prfSelectedAvatar = p.avatar;
+
+  const inp = document.getElementById('prf-edit-name');
+  inp.value = p.name;
+  document.getElementById('prf-name-counter').textContent = p.name.length;
+
+  renderAvatarPreview();
+  hideAvatarError();
+  document.getElementById('prf-edit-modal').classList.add('show');
+  setTimeout(() => inp.focus(), 220);
+}
+
+function closeProfileEdit() {
+  document.getElementById('prf-edit-modal').classList.remove('show');
+}
+
+function renderAvatarPreview() {
+  const el = document.getElementById('prf-avatar-preview');
+  applyAvatarTo(el, _prfSelectedAvatar);
+  const rm = document.getElementById('prf-remove-btn');
+  if (rm) rm.style.display = isAvatarImage(_prfSelectedAvatar) ? '' : 'none';
+}
+
+function showAvatarError(msg) {
+  const e = document.getElementById('prf-avatar-error');
+  if (!e) return;
+  e.textContent = msg;
+  e.style.display = '';
+}
+function hideAvatarError() {
+  const e = document.getElementById('prf-avatar-error');
+  if (e) e.style.display = 'none';
+}
+
+/* Resmi 128×128 kareye kırpıp JPEG'e sıkıştır.
+   createImageBitmap ile native çözümleme: EXIF orientation düzelir,
+   kırılgan dataURL→Image yolu atlanır (saydam PNG'lerde çizgi/leke sorunu çözülür). */
+function _resizeAvatarFile(file) {
+  return new Promise((resolve, reject) => {
+    if (!file || !file.type || !file.type.startsWith('image/')) {
+      reject(new Error('Sadece resim dosyaları seçilebilir'));
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      reject(new Error('Dosya 5 MB\'dan büyük olamaz'));
+      return;
+    }
+
+    const SIZE = 128;
+    const draw = (source, w, h) => {
+      if (!w || !h) { reject(new Error('Resim boyutu okunamadı')); return; }
+      const canvas = document.createElement('canvas');
+      canvas.width = SIZE; canvas.height = SIZE;
+      const ctx = canvas.getContext('2d');
+      // Saydam PNG'ler düz arka planla çizilsin (çizgi/leke olmasın)
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, SIZE, SIZE);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      const minDim = Math.min(w, h);
+      const sx = (w - minDim) / 2;
+      const sy = (h - minDim) / 2;
+      ctx.drawImage(source, sx, sy, minDim, minDim, 0, 0, SIZE, SIZE);
+      try {
+        resolve(canvas.toDataURL('image/jpeg', 0.85));
+      } catch (err) { reject(new Error('Resim işlenemedi')); }
+    };
+
+    // Tercih edilen yol: createImageBitmap (native decode + EXIF orientation)
+    if (typeof createImageBitmap === 'function') {
+      createImageBitmap(file, { imageOrientation: 'from-image' })
+        .then(bmp => { draw(bmp, bmp.width, bmp.height); if (bmp.close) bmp.close(); })
+        .catch(() => _decodeAvatarViaImg(file, draw, reject));
+      return;
+    }
+    _decodeAvatarViaImg(file, draw, reject);
+  });
+}
+
+/* Yedek yol: FileReader + Image (createImageBitmap yoksa / başarısızsa) */
+function _decodeAvatarViaImg(file, draw, reject) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => draw(img, img.naturalWidth || img.width, img.naturalHeight || img.height);
+    img.onerror = () => reject(new Error('Resim açılamadı'));
+    img.src = e.target.result;
+  };
+  reader.onerror = () => reject(new Error('Dosya okunamadı'));
+  reader.readAsDataURL(file);
+}
+
+async function onAvatarFileSelected(event) {
+  const file = event.target.files && event.target.files[0];
+  event.target.value = ''; // aynı dosya tekrar seçilebilsin
+  if (!file) return;
+  try {
+    hideAvatarError();
+    const dataUrl = await _resizeAvatarFile(file);
+    _prfSelectedAvatar = dataUrl;
+    renderAvatarPreview();
+  } catch (err) {
+    showAvatarError(err.message || 'Resim yüklenemedi');
+  }
+}
+
+function removeProfileAvatar() {
+  _prfSelectedAvatar = '★';
+  hideAvatarError();
+  renderAvatarPreview();
+}
+
+function saveProfileEdit() {
+  const name = document.getElementById('prf-edit-name').value;
+  try {
+    setProfile({ name, avatar: _prfSelectedAvatar });
+  } catch (err) {
+    showAvatarError('Kaydedilemedi — depolama dolu olabilir');
+    return;
+  }
+  closeProfileEdit();
+  refreshProfileHero();
+}
+
+/* Escape ile kapat + canlı sayaç */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const m = document.getElementById('prf-edit-modal');
+    if (m && m.classList.contains('show')) closeProfileEdit();
+  }
+});
+document.addEventListener('input', e => {
+  if (e.target && e.target.id === 'prf-edit-name') {
+    const c = document.getElementById('prf-name-counter');
+    if (c) c.textContent = e.target.value.length;
+  }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const s        = getStats();
+  const records  = getRecords();
+  const unlocked = getUnlockedIds();
+
+  /* ─── 0. PROFİL (avatar + ad) ─── */
+  refreshProfileHero();
+
+  /* ─── 1. HERO ─── */
+  const wins         = s.totalWins;
+  const pct          = s.totalGames > 0 ? Math.round((wins / s.totalGames) * 100) : 0;
+  const avgTime      = wins > 0 ? formatTime(Math.round(s.totalTime / wins)) : '—';
+  const avgMoves     = wins > 0 ? Math.round(s.totalMoves / wins).toString() : '—';
+  const totalTimeStr = s.totalTime > 0 ? formatLongTime(s.totalTime) : '—';
+
+  const sub = document.getElementById('prf-hero-sub');
+  sub.innerHTML = s.totalGames === 0
+    ? '<span class="prf-hero-empty">Henüz oyun yok — başlamaya hazır mısın?</span>'
+    : `Son oyun · <b>${humanDate(s.lastPlayDate)}</b>`;
+
+  const streakEl = document.getElementById('prf-hero-streak');
+  if (s.streak >= 1) {
+    streakEl.innerHTML = `
+      <span class="prf-flame">🔥</span>
+      <span class="prf-streak-num">${s.streak}</span>
+      <span class="prf-streak-lbl">gün</span>
+    `;
+  } else {
+    streakEl.style.display = 'none';
+  }
+
+  document.getElementById('prf-hero-stats').innerHTML = `
+    <div class="prf-stat"><span class="prf-stat-val">${s.totalGames}</span><span class="prf-stat-lbl">Oyun</span></div>
+    <div class="prf-stat${pct >= 75 && s.totalGames >= 5 ? ' prf-stat-hi' : ''}">
+      <span class="prf-stat-val">${pct}<span class="prf-stat-suffix">%</span></span>
+      <span class="prf-stat-lbl">Oran</span>
+    </div>
+    <div class="prf-stat"><span class="prf-stat-val">${avgMoves}</span><span class="prf-stat-lbl">Ort. Hamle</span></div>
+  `;
+
+  /* ─── 2. REKORLAR ─── */
+  const DIFF_NAMES = { easy: 'Kolay', medium: 'Orta', hard: 'Zor' };
+  document.getElementById('prf-diff-rows').innerHTML = ['easy', 'medium', 'hard'].map(k => {
+    const d = s.byDiff[k] || { games: 0, wins: 0 };
+    const r = records[k];
+    const hasRecord = r && r.bestTime;
+    return `
+      <div class="prf-rec-row">
+        <span class="prf-diff-tag prf-diff-${k}">${DIFF_NAMES[k]}</span>
+        ${hasRecord
+          ? `<span class="prf-rec-val">${formatTime(r.bestTime)}</span>
+             <span class="prf-rec-sep">·</span>
+             <span class="prf-rec-val">${r.bestMoves} hamle</span>`
+          : `<span class="prf-rec-empty">—</span>`}
+        <span class="prf-rec-games">${d.games} oyun</span>
+      </div>
+    `;
+  }).join('');
+
+  /* ─── 3. BAŞARIMLAR ─── */
+  const total  = ACHIEVEMENTS.length;
+  const ucount = unlocked.size;
+  const apct   = total > 0 ? (ucount / total) * 100 : 0;
+  document.getElementById('prf-ach-fill').style.width = apct + '%';
+  document.getElementById('prf-ach-meta').innerHTML = `<b>${ucount}</b> / ${total} kazanıldı · ${Math.round(apct)}%`;
+
+  const recents = ACHIEVEMENTS.filter(a => unlocked.has(a.id)).slice(-4);
+  const chips = recents.map(a =>
+    `<span class="prf-ach-chip" title="${a.desc}"><span class="prf-ach-chip-icon">${a.icon}</span>${a.name}</span>`
+  ).join('');
+  document.getElementById('prf-ach-chips').innerHTML = chips
+    || '<span class="prf-ach-empty">Henüz başarım yok — ilk oyununu oyna!</span>';
+
+});
+</script>
+
+</body>
+</html>
